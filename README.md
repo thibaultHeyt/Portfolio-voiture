@@ -1,5 +1,8 @@
 # Thibault — carnet de route
 
+**En ligne :** https://thibaultheyt.github.io/Portfolio-voiture/ — publication
+automatique à chaque envoi sur `main`.
+
 Un portfolio automobile en page unique : thème sombre rouge, **hero avec la
 voiture 3D plein cadre** et titre par-dessus, bandeau défilant, expériences et
 fiche technique, carnet, module des terrains et contact.
