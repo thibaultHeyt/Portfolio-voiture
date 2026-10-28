@@ -81,7 +81,7 @@ export const cars: Car[] = [
     modele: 'Ranger Wildtrak',
     annee: '2016',
     categorie: 'Pick-up',
-    terrain: 'Montagne',
+    terrain: 'Montagne suisse',
     tint: '#1b1c1e',
     art: 'pickup',
     model: '/models/ford-ranger-wildtrak.glb',
@@ -90,10 +90,10 @@ export const cars: Car[] = [
     // les feux, vitres et chromes restent intacts.
     paint: { material: 'wire_006134006', color: '#1b1c1e', texturePaint: true },
     credit: { label: 'Ford Ranger 2019 — TSB3DMODELS, CC BY-NC 4.0', url: 'https://sketchfab.com/3d-models/ford-ranger-2019-blue-3f7e1abb70cd476e8dd6de506c2ef417' },
-    tagline: 'La montagne au volant du pick-up de mon frère.',
+    tagline: 'Les routes vaudoises au volant du pick-up de mon frère.',
     appris: 'Anticiper plutôt que subir.',
     recit: [
-      "Conduite en montagne avec le Ranger de mon frère. La position haute change tout : on lit la route loin devant, on voit les virages arriver, et on prend l'habitude de gérer l'élan plutôt que de freiner dans l'urgence.",
+      "Conduite en Suisse, dans le canton de Vaud, avec le Ranger de mon frère. La position haute change tout : on lit la route loin devant, on voit les virages arriver, et on prend l'habitude de gérer l'élan plutôt que de freiner dans l'urgence.",
       "Le cinq cylindres diesel pousse bas et garde du couple dans les montées, même chargé. Avec lui, j'ai appris à conduire au couple et à anticiper : une école de patience qui sert ensuite partout.",
     ],
     chiffres: [
@@ -148,8 +148,7 @@ export const cars: Car[] = [
     art: 'formula',
     model: '/models/formule-renault.glb',
     preview: '/models/previews/formule-renault.jpg',
-    modele3d:
-      "La 3D est une Renault RE40 de Formule 1 (1983), pas la Formule Renault 2.0 conduite à Haute-Saintonge.",
+    modele3d: 'Rendu 3D non représentatif.',
     credit: { label: 'Renault RE40 — JUST GAME, CC BY 4.0', url: 'https://sketchfab.com/3d-models/renault-re40-7b24b5ea230e44ddbcd66ae02c3c22e5' },
     tagline: 'Six tours à Haute-Saintonge, sans filtre.',
     appris: 'Tout se joue avant le virage.',
@@ -180,15 +179,15 @@ export const cars: Car[] = [
     art: 'hatch',
     model: '/models/suzuki-swift-sport.glb',
     preview: '/models/previews/suzuki-swift-sport.jpg',
-    modele3d:
-      "La 3D montre la génération précédente de la Swift Sport, pas la 2016 conduite au Nürburgring et à Spa.",
+    modele3d: 'Rendu 3D non représentatif.',
     paint: { material: 'Body', color: '#ece9e2' },
     credit: { label: 'Suzuki Swift Sport — DR1KING100K, CC BY 4.0', url: 'https://sketchfab.com/3d-models/suzuki-swift-sport-cfba568fdc6f45fca3c2ca4bb7e4dee2' },
-    tagline: 'Ma première voiture, le Nürburgring et Spa-Francorchamps.',
+    tagline: 'Ma première voiture : le Nürburgring, Spa et le col d’Aubisque.',
     appris: 'La légèreté bat la puissance.',
     recit: [
       "Ma première voiture. Trois tours du Nürburgring et deux heures à Spa-Francorchamps avec elle : deux circuits qui n'ont rien à voir, et pourtant la même leçon — la légèreté et la précision comptent plus que les chevaux.",
       "À Spa, les enchaînements et le dénivelé m'ont appris à être régulier. Au Nürburgring, j'ai surtout appris l'humilité : la piste est longue, les repères changent tout le temps, et la voiture prévient avant de décrocher. C'est là que j'ai vraiment commencé à piloter.",
+      "Une journée dans les Pyrénées pour monter au col d'Aubisque : les lacets, les pourcentages, et la boîte courte qui oblige à choisir son rapport avant d'entrer dans le virage.",
     ],
     chiffres: [
       { value: '136', unit: 'ch', label: 'Puissance' },

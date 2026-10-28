@@ -230,7 +230,12 @@ export function CarStage({ index, onChange }: { index: number; onChange: (index:
               <button
                 key={item.slug}
                 type="button"
-                onClick={() => onChange(i)}
+                onClick={() => {
+                  onChange(i)
+                  // Même principe que la liste « Le carnet » : on remonte à
+                  // l'expérience au volant pour voir la voiture choisie.
+                  document.getElementById('experiences')?.scrollIntoView({ behavior: 'smooth' })
+                }}
                 aria-pressed={i === index}
                 data-cursor="Voir"
                 className={cx(

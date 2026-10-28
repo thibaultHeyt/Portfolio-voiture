@@ -30,7 +30,7 @@ export function Preloader() {
   // Défilement des noms de voitures pendant l'attente.
   useEffect(() => {
     if (!show) return
-    const id = window.setInterval(() => setTicker((n) => (n + 1) % cars.length), 620)
+    const id = window.setInterval(() => setTicker((n) => (n + 1) % cars.length), 800)
     return () => window.clearInterval(id)
   }, [show])
 
@@ -75,8 +75,8 @@ export function Preloader() {
       },
       {
         label: 'Voitures 3D',
-        // Les huit GLB pèsent 163 Mo : au-delà de 20 s on ouvre la page quand
-        // même, et les modèles restants finissent de se charger en arrière-plan.
+        // Les huit GLB pèsent 33 Mo une fois compressés en Draco : au-delà de
+        // 20 s on ouvre la page quand même, et le reste se charge en fond.
         cap: 20000,
         run: (onProgress) => Promise.all([preloadModels(onProgress), waitForScene(3500)]),
       },
@@ -194,7 +194,7 @@ export function Preloader() {
                         initial={{ y: 18, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         exit={{ y: -18, opacity: 0 }}
-                        transition={{ duration: 0.32, ease: EASE }}
+                        transition={{ duration: 0.35, ease: EASE }}
                         className="font-display text-[18px] text-fg/85 sm:text-[24px]"
                       >
                         {cars[ticker].marque} {cars[ticker].modele}

@@ -131,16 +131,18 @@ coordonnées, les récits et la voiture de chaque lieu sont dans `terrains`
 ## Contact
 
 Il n'y a plus de formulaire : il n'envoyait rien et laissait croire le contraire.
-La carte de contact propose d'écrire le message sur place, puis le bouton le
-**copie dans le presse-papiers** et ouvre la conversation Instagram du compte
-défini par le lien `Instagram` de `src/data/site.ts`
-(`https://ig.me/m/<pseudo>`) : il ne reste qu'à coller et envoyer.
+Le bouton de la section contact ouvre un **message direct Instagram** sur le
+compte défini par le lien `Instagram` de `src/data/site.ts`
+(`https://ig.me/m/<pseudo>`) : le message s'écrit dans Instagram, pas sur le site.
 
-Instagram n'accepte pas de texte prérempli depuis un site : ses liens DM
-n'acceptent qu'un paramètre `ref`, et l'API de messagerie ne permet pas
-d'ouvrir une conversation. D'où le copier-coller plutôt qu'un envoi direct. Le
-pseudo est déduit du lien `Instagram`, donc changer d'adresse suffit à changer
-de destinataire.
+Un temps, le texte était composé sur le site puis copié dans le presse-papiers
+avant d'ouvrir la conversation. C'est revenu en arrière : le collage n'est pas
+naturel pour un visiteur et l'onglet ouvert ne garde pas le champ. Instagram
+n'accepte de toute façon pas de texte prérempli (seul un paramètre `ref`
+existe), donc il n'y a rien à préremplir : le bouton suffit.
+
+Le pseudo est déduit du lien `Instagram`, donc changer d'adresse suffit à
+changer de destinataire.
 
 Le Worker (`src/worker/index.ts`) ne garde que `/api/health` et le service des
 assets.
@@ -165,7 +167,7 @@ reste `/` : rien à changer.
 
 Les huit GLB d'origine pèsent 163 Mo. Ils ont été compressés en Draco (le
 chargeur décode déjà ce format, voir `public/draco/`) et pèsent maintenant
-42 Mo, dont 8 Mo pour la Swift. Pour refaire l'opération après un nouveau
+33 Mo, dont 8 Mo pour la Swift. Pour refaire l'opération après un nouveau
 modèle :
 
 ```sh

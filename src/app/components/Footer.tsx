@@ -1,5 +1,4 @@
 import { ArrowUpRight, MessageCircle, Play, Send } from 'lucide-react'
-import { useState } from 'react'
 
 import { site } from '../../data/site'
 import { Lines, Magnetic, Reveal } from './motion'
@@ -12,46 +11,8 @@ const youtube = site.socials.find((social) => social.label === 'YouTube')?.href 
 const handle = instagram.replace(/\/$/, '').split('/').pop() || 'titou_cars'
 const direct = `https://ig.me/m/${handle}`
 
-// Instagram n'accepte pas de texte prérempli dans une conversation (seul un
-// paramètre `ref` existe). Le texte s'écrit donc ici, puis part dans le
-// presse-papiers au moment d'ouvrir le DM.
-const starter = 'Salut Thibault, je viens de ton site.\n\nJe te contacte à propos de '
-
-/** Copie le message ; le presse-papiers moderne peut être refusé, on retombe
- *  sur la sélection d’un champ caché. */
-async function copy(text: string): Promise<boolean> {
-  try {
-    await navigator.clipboard.writeText(text)
-    return true
-  } catch {
-    try {
-      const area = document.createElement('textarea')
-      area.value = text
-      area.setAttribute('readonly', '')
-      area.style.position = 'fixed'
-      area.style.top = '-1000px'
-      document.body.appendChild(area)
-      area.select()
-      const done = document.execCommand('copy')
-      area.remove()
-      return done
-    } catch {
-      return false
-    }
-  }
-}
-
 export function Footer() {
   const time = useLocalTime()
-  const [message, setMessage] = useState(starter)
-  const [sent, setSent] = useState<'idle' | 'copied' | 'manual'>('idle')
-
-  async function send() {
-    const text = message.trim()
-    if (!text) return
-    setSent((await copy(text)) ? 'copied' : 'manual')
-    window.open(direct, '_blank', 'noopener,noreferrer')
-  }
 
   return (
     <footer id="contact" className="mt-28 scroll-mt-20 border-t border-line sm:mt-40">
@@ -86,50 +47,31 @@ export function Footer() {
           </div>
 
           <Reveal delay={0.15}>
-            <div className="flex h-full flex-col gap-5 rounded-card border border-line bg-surface-2/40 p-6 sm:p-7">
+            <div className="flex h-full flex-col justify-between gap-10 rounded-card border border-line bg-surface-2/40 p-7 sm:p-9">
               <div>
                 <p className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-faint">
                   <MessageCircle className="size-3.5" />
                   Instagram Direct
                 </p>
-                <p className="font-display mt-3 text-[clamp(24px,2.7vw,32px)] leading-[1.05] text-fg">
-                  Ton message, prêt à partir.
+                <p className="font-display mt-4 text-[clamp(28px,3.2vw,40px)] leading-[1.03] text-fg">
+                  Un message,<br />directement<br />dans mes DM.
                 </p>
-                <p className="mt-3 text-[13px] leading-relaxed text-muted">
-                  Écris-le ici : au clic, il est copié et Instagram s’ouvre sur notre conversation.
+                <p className="mt-4 text-[14px] leading-relaxed text-muted">
+                  Le bouton ouvre Instagram Direct sur mon compte : le message s’écrit là-bas, dans la conversation, et je réponds au même endroit.
                 </p>
               </div>
-
-              <label htmlFor="dm-message" className="sr-only">
-                Ton message
-              </label>
-              <textarea
-                id="dm-message"
-                value={message}
-                rows={5}
-                maxLength={900}
-                onChange={(event) => {
-                  setMessage(event.target.value)
-                  setSent('idle')
-                }}
-                className="w-full resize-none rounded-control border border-line-strong bg-[#0d0a0a] px-4 py-3 text-[14px] leading-relaxed text-fg placeholder:text-faint transition-colors focus:border-accent focus:outline-none"
-              />
-
               <div>
-                <button
-                  type="button"
-                  onClick={send}
+                <a
+                  href={direct}
+                  target="_blank"
+                  rel="noreferrer"
                   className="flex h-14 w-full items-center justify-center gap-2 rounded-[16px] bg-accent text-[15px] font-medium text-white transition-colors hover:bg-[#f04b3f]"
                 >
                   <Send className="size-4" />
-                  {sent === 'idle' ? 'Envoyer sur Instagram' : 'Copié, Instagram est ouvert'}
-                </button>
-                <p aria-live="polite" className="mt-3 text-[11.5px] leading-relaxed text-faint">
-                  {sent === 'copied'
-                    ? 'Colle le texte dans la conversation (Ctrl/⌘ + V) puis envoie-le : Instagram ne permet pas de préremplir un DM depuis un site.'
-                    : sent === 'manual'
-                      ? 'Le presse-papiers a refusé : sélectionne ton texte dans le champ ci-dessus, puis colle-le dans Instagram.'
-                      : `Ouvre Instagram Direct sur @${handle}, connecté à ton compte. Sans compte, le profil reste accessible depuis les liens ci-dessous.`}
+                  Écrire à @{handle}
+                </a>
+                <p className="mt-3 text-[12px] leading-relaxed text-faint">
+                  Ouvre Instagram, connecté à ton compte (application ou navigateur). Sans compte, le profil reste accessible depuis les liens ci-dessous.
                 </p>
               </div>
             </div>
