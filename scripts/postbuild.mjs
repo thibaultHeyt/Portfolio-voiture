@@ -2,6 +2,7 @@
 // from the build output, so `deploy.json` can point straight at dist/.
 import { readdirSync, rmSync, statSync } from 'node:fs'
 import { join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 function clean(dir) {
   for (const name of readdirSync(dir)) {
@@ -14,4 +15,5 @@ function clean(dir) {
   }
 }
 
-clean(new URL('../dist', import.meta.url).pathname)
+// `pathname` renvoie « /C:/... » sur Windows, que fs ne sait pas ouvrir.
+clean(fileURLToPath(new URL('../dist', import.meta.url)))

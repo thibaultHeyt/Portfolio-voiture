@@ -1,37 +1,178 @@
-# Portfolio
+# Thibault — carnet de route
 
-A personal site for a designer or developer: a counted preloader, an
-oversized name, a services marquee, a selected-work grid with parallax and a
-cursor-following label, an about teaser, an expanding services list, rotating
-testimonials and a contact section with a working form. Each project has a
-case-study page with a next-project link, and there is a full about page.
+Un portfolio automobile en page unique : thème sombre rouge, **hero avec la
+voiture 3D plein cadre** et titre par-dessus, bandeau défilant, expériences et
+fiche technique, carnet, module des terrains et contact.
 
-## Run it
+## Lancer le projet
 
 ```sh
 bun install
 bun run dev        # http://localhost:5173
 bun run build      # dist/client (assets) + dist/portfolio/index.js (Worker)
+bun run typecheck
 ```
 
-## Make it yours
+## La scène 3D
 
-- `src/data/site.ts` is the whole site: your name, role, location, socials,
-  projects, services, testimonials and experience. Images live in
-  `public/images`; each project has one cover and the case-study page crops it
-  for detail shots until you add more.
-- `src/app/pages/*` are the three pages; `src/app/components/motion.tsx` holds
-  the reusable animation pieces (masked line reveals, parallax, magnetic
-  buttons, the rotating badge).
-- `src/styles.css` holds the tokens: a paper canvas, ink text, one electric
-  accent, Bricolage Grotesque for display type. Everything rounded is a
-  squircle via `corner-shape`; true circles use `.round`.
-- `src/worker/index.ts` receives the contact form at `/api/contact`. Forward
-  it to your inbox with an email API (key in Sites → Secrets) or save it to D1.
+Le hero affiche le **vrai modèle GLB** de la voiture, jamais une image ni une
+silhouette provisoire :
 
-Motion respects `prefers-reduced-motion`, and the preloader runs once per tab.
+- `src/app/lib/carModels.ts` : télécharge et analyse les huit modèles une fois
+  pour toutes, les garde en cache et expose la progression du préchargement.
+- `src/app/components/CarViewer.tsx` : la scène (caméra, studio HDRI fait de
+  boîtes à lumière, ombres portées, sol), le cadrage automatique des fichiers et
+  l'interaction. On fait tourner la voiture en glissant à la souris ou au doigt ;
+  elle tourne aussi seule quand on ne la touche pas, sauf si
+  `prefers-reduced-motion` est actif.
+- `src/data/carShapes.ts` : les tracés SVG qui dessinent les vignettes du
+  sélecteur (le tracé n'est plus extrudé en 3D).
 
-## Deploy with Freebuff Sites
+Changer de voiture : flèches, boutons ← → du clavier, ou vignettes.
 
-`deploy.json` points at the build output. After `bun run build`, deploy with
-the `sites_deploy` tool from this directory.
+### Aperçus réalistes (fiche)
+
+La fiche n'embarque plus de lecteur externe : chaque voiture porte un rendu du
+vrai modèle, aux mêmes couleurs que la scène (`preview` dans
+`src/data/cars.ts`, fichiers dans `public/models/previews/`). La grande image et
+les vignettes du sélecteur utilisent ces rendus.
+
+Un clic sur la grande image lance la scène 3D **sur place**, au même angle et au
+même cadrage que l'aperçu (`PREVIEW_ANGLE` / `PREVIEW_ZOOM` dans
+`CarStage.tsx`) : on fait tourner la voiture à la souris ou au doigt, puis
+« Fermer » ramène l'image.
+
+Les aperçus sont pris de trois quarts avant, à 1600 × 900, sur fond de studio.
+Pour en régénérer un après un changement de couleur ou de modèle : ouvrir la
+fiche, glisser pour amener la voiture à l'angle voulu, puis enregistrer le
+canvas en JPEG dans `public/models/previews/<slug>.jpg` (le nom doit
+correspondre à celui de `preview`).
+
+### Vraies maquettes 3D
+
+Les huit modèles sont dans `public/models/` et chargés par le hero (`model` dans
+`src/data/cars.ts`) : Audi R8, Ford Ranger, Audi RS4, Renault RE40, Suzuki
+Swift, Alpine A110, Mazda MX-5 et le kart. Le chargeur gère Draco, recadre et
+pose la voiture automatiquement ; si un fichier manque ou casse, la silhouette
+générée reprend la main sans erreur visible.
+
+Deux réglages par fiche, au besoin : `modelRotation` (axe du fichier) et
+`modelScale` (cadrage). `paint` porte la couleur de carrosserie de la vraie
+voiture : le matériau nommé est repeint (`Body` de la Swift, `car_paint` de la
+RS4, `carpaint` de la MX-5, la caisse du Ranger, `WindowInside` de l'Alpine —
+le nom est trompeur dans ce fichier). La Swift, exportée sans textures, reçoit
+en plus ses vitrages, chromes et plastiques d'après le nom des matériaux.
+
+Les deux modèles à livrée — la Formule Renault et le kart — gardent leur
+décor d'origine : leur peinture est une texture complète, la reteinter rendrait
+la livrée verte ou illisible.
+
+Le crédit (titre, auteur, licence) est obligatoire pour les licences CC et
+s'affiche sous le récit. Trois modèles sont en **CC BY-NC(-SA/ND)** : usage non
+commercial uniquement.
+
+Les modèles sont lourds (87 Mo pour la Swift) : le premier affichage de cette
+fiche prend quelques secondes selon la connexion.
+
+## Écran de chargement
+
+`src/app/components/Preloader.tsx` s'affiche au chargement de la page et suit le
+vrai travail en cours : polices, images, puis premier rendu WebGL (signalé par
+l'événement `scene:ready`, émis par le `Canvas` de `CarViewer`). Aucun faux
+compte à rebours : le rail gradué et le pourcentage avancent avec ces étapes,
+avec un plancher de 1,2 s pour rester lisible. Si la 3D ne répond pas en 3,5 s,
+le chargement se termine quand même. Rien ne s'affiche quand
+`prefers-reduced-motion` est actif.
+
+## Personnaliser
+
+- `src/data/cars.ts` : les voitures. Ordre, marque, modèle, année, catégorie,
+  terrain, couleur, phrase forte (`appris`), récit (`recit`), chiffres clés et
+  fiche technique. `modele3d` affiche en rouge une précision quand le fichier
+  3D n'est pas exactement la voiture conduite (la Swift et la Formule Renault
+  pour l'instant). C'est le fichier à réécrire en premier.
+- `src/data/site.ts` : nom, ville, fuseau, textes du hero, liens Instagram et
+  YouTube, et la liste `terrains` (lieux de la carte : coordonnées, récit,
+  mesure et voiture associée).
+- `src/data/carShapes.ts` : la silhouette de secours de chaque type de
+  carrosserie (vignette affichée si un aperçu manque).
+- `index.html` : titre et description pour le référencement.
+
+## Page unique
+
+Le menu pointe vers des ancres : `#experiences` (fiche et sélecteur), `#carnet`
+(liste des voitures), `#terrains` (carte des circuits et des routes) et
+`#contact` (message direct Instagram). Aucune route supplémentaire. La scène 3D
+vit dans le hero (`#top`).
+
+## Carte des terrains
+
+`src/app/components/TerrainMap.tsx` affiche les lieux sur une carte dessinée en
+SVG : fond transparent, contours de pays, graticule, trajets en pointillés et
+pins, tous dans le rouge de l'accent. Un clic sur un point (ou sur une ligne de
+la liste) cadre la carte sur le lieu et ouvre sa fiche : ce qui s'est passé
+là-bas (`note`), la mesure de la session et la voiture associée (`car`, un slug
+de `cars.ts`), avec un lien vers la fiche 3D.
+
+Les points sont en HTML au-dessus du SVG, donc ils gardent la même taille et la
+même zone de clic à tous les niveaux de zoom. Les trois lieux autour de
+Bordeaux sont regroupés sous une pastille « 3 » qui, au clic, zoome et ouvre la
+liste des trois — leurs points sont à quelques kilomètres, ils se
+chevaucheraient à l'échelle de la carte.
+
+Les tracés viennent de `src/data/mapGeo.ts`, généré depuis Natural Earth
+(`ne_50m_admin_0_countries`) et simplifié : ne pas l'éditer à la main. Les
+coordonnées, les récits et la voiture de chaque lieu sont dans `terrains`
+(`src/data/site.ts`) ; le point se place tout seul à partir de `coord`.
+
+## Contact
+
+Il n'y a plus de formulaire : il n'envoyait rien et laissait croire le contraire.
+La carte de contact propose d'écrire le message sur place, puis le bouton le
+**copie dans le presse-papiers** et ouvre la conversation Instagram du compte
+défini par le lien `Instagram` de `src/data/site.ts`
+(`https://ig.me/m/<pseudo>`) : il ne reste qu'à coller et envoyer.
+
+Instagram n'accepte pas de texte prérempli depuis un site : ses liens DM
+n'acceptent qu'un paramètre `ref`, et l'API de messagerie ne permet pas
+d'ouvrir une conversation. D'où le copier-coller plutôt qu'un envoi direct. Le
+pseudo est déduit du lien `Instagram`, donc changer d'adresse suffit à changer
+de destinataire.
+
+Le Worker (`src/worker/index.ts`) ne garde que `/api/health` et le service des
+assets.
+
+## Publier sur GitHub Pages
+
+Le site est statique : `dist/client` suffit, le Worker du projet (`/api/health`)
+n'est pas utilisé. Un workflow (`.github/workflows/deploy.yml`) construit et
+publie à chaque envoi sur `main`.
+
+À faire une fois dans le dépôt GitHub : **Settings → Pages → Build and
+deployment → Source : GitHub Actions**. Le site sort sur
+`https://<pseudo>.github.io/<dépôt>/`.
+
+Le workflow construit avec `VITE_BASE=/<dépôt>/`, parce que Pages sert le site
+dans un sous-dossier : sans cette base, `/models/...` et `/draco/...`
+tomberaient à la racine du domaine. Tous les fichiers de `public/` passent par
+`asset()` (`src/app/lib/asset.ts`) pour suivre cette base. En local, la base
+reste `/` : rien à changer.
+
+### Poids des modèles
+
+Les huit GLB d'origine pèsent 163 Mo. Ils ont été compressés en Draco (le
+chargeur décode déjà ce format, voir `public/draco/`) et pèsent maintenant
+42 Mo, dont 8 Mo pour la Swift. Pour refaire l'opération après un nouveau
+modèle :
+
+```sh
+bun x @gltf-transform/cli draco entree.glb sortie.glb
+```
+
+La compression ne touche que la géométrie : matériaux, textures et noms de
+matériaux sont conservés, donc les couleurs (`paint`) s'appliquent pareil.
+
+## Déployer avec Freebuff Sites
+
+`deploy.json` pointe vers la sortie de build. Après `bun run build`, déployez
+avec l'outil `sites_deploy` depuis ce dossier.

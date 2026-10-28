@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { Link, NavLink, useLocation } from 'react-router'
 
 import { site } from '../../data/site'
 import { cx } from '../lib/cx'
@@ -7,7 +6,7 @@ import { cx } from '../lib/cx'
 export function useLocalTime() {
   const [time, setTime] = useState('')
   useEffect(() => {
-    const tick = () => setTime(new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: site.timezone }).format(new Date()))
+    const tick = () => setTime(new Intl.DateTimeFormat('fr-FR', { hour: '2-digit', minute: '2-digit', timeZone: site.timezone }).format(new Date()))
     tick()
     const id = window.setInterval(tick, 15_000)
     return () => window.clearInterval(id)
@@ -15,9 +14,14 @@ export function useLocalTime() {
   return time
 }
 
+const links = [
+  { href: '#experiences', label: 'Expériences' },
+  { href: '#carnet', label: 'Le carnet' },
+  { href: '#contact', label: 'Contact' },
+]
+
 export function Nav() {
   const time = useLocalTime()
-  const location = useLocation()
   const [hidden, setHidden] = useState(false)
 
   useEffect(() => {
@@ -31,28 +35,23 @@ export function Nav() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  const link = (to: string, label: string) => (
-    <NavLink
-      key={to}
-      to={to}
-      className={({ isActive }) => cx('link-draw text-[14px] transition-colors', isActive || (to !== '/' && location.pathname.startsWith(to)) ? 'text-fg' : 'text-muted hover:text-fg')}
-    >
-      {label}
-    </NavLink>
-  )
-
   return (
-    <header className={cx('fixed inset-x-0 top-0 z-40 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]', hidden && '-translate-y-full')}>
+    <header
+      className={cx(
+        'fixed inset-x-0 top-0 z-40 border-b border-line/80 bg-bg/75 backdrop-blur-xl transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]',
+        hidden && '-translate-y-full',
+      )}
+    >
       <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between px-5 sm:px-8">
-        <Link to="/" className="text-[15px] font-medium">
+        <a href="#top" className="font-display text-[19px] tracking-[-0.02em] text-fg">
           {site.name}
-        </Link>
-        <nav className="flex items-center gap-6">
-          {link('/#work', 'Work')}
-          {link('/about', 'About')}
-          <a href={`mailto:${site.email}`} className="link-draw text-[14px] text-muted transition-colors hover:text-fg">
-            Contact
-          </a>
+        </a>
+        <nav className="flex items-center gap-5 sm:gap-7">
+          {links.map((link) => (
+            <a key={link.href} href={link.href} className="link-draw text-[13px] text-muted transition-colors hover:text-fg sm:text-[14px]">
+              {link.label}
+            </a>
+          ))}
           <span className="hidden text-[13px] tabular-nums text-faint sm:inline">
             {site.location} {time}
           </span>

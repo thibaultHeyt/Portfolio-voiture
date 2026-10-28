@@ -4,5 +4,6 @@ dist
 .dev.vars
 .dev.vars.*
 !.dev.vars.example
+artifacts
 .DS_Store
 *.log

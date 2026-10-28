@@ -6,27 +6,32 @@
   --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-display: 'Bricolage Grotesque Variable', 'Inter Variable', ui-sans-serif, sans-serif;
 
-  --color-bg: #f2efe9;
-  --color-surface: #f8f6f1;
-  --color-surface-2: #e9e5dd;
-  --color-line: #ddd8ce;
-  --color-line-strong: #c9c3b7;
-  --color-fg: #141311;
-  --color-muted: #6a665e;
-  --color-faint: #9c978d;
-  --color-accent: #2f3bff;
+  --color-bg: #0a0909;
+  --color-surface: #121010;
+  --color-surface-2: #191515;
+  --color-line: #2a2422;
+  --color-line-strong: #3f3532;
+  --color-fg: #f4efec;
+  --color-muted: #a79e98;
+  --color-faint: #7a706c;
+  --color-accent: #e0362c;
 
   --radius-control: 14px;
   --radius-card: 24px;
   --radius-image: 28px;
 
   --animate-marquee: marquee 30s linear infinite;
+  --animate-dash: dash 2.6s linear infinite;
   --animate-drift-a: drift-a 22s ease-in-out infinite alternate;
   --animate-drift-b: drift-b 26s ease-in-out infinite alternate;
   --animate-drift-c: drift-c 30s ease-in-out infinite alternate;
   @keyframes marquee {
     from { transform: translateX(0); }
     to { transform: translateX(-50%); }
+  }
+  @keyframes dash {
+    from { stroke-dashoffset: 0; }
+    to { stroke-dashoffset: -22; }
   }
   @keyframes drift-a {
     from { transform: translate3d(0, 0, 0) scale(1); }
@@ -56,8 +61,14 @@
   }
   html {
     background: var(--color-bg);
-    color-scheme: light;
+    color-scheme: dark;
     overscroll-behavior-y: none;
+    scroll-padding-top: 5rem;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
   }
   body {
     background: var(--color-bg);
@@ -82,8 +93,8 @@
     outline-offset: 3px;
   }
   ::selection {
-    background: var(--color-fg);
-    color: var(--color-bg);
+    background: var(--color-accent);
+    color: #fff;
   }
   img {
     user-select: none;
@@ -140,9 +151,41 @@
   overflow: hidden;
 }
 
+/* Curseur maison : le curseur système disparaît seulement quand le composant
+   Cursor est monté (pointeur fin, mouvement autorisé). Le texte garde son
+   curseur d'insertion. */
+@media (pointer: fine) {
+  html.has-cursor,
+  html.has-cursor * {
+    cursor: none !important;
+  }
+  html.has-cursor input,
+  html.has-cursor textarea {
+    cursor: text !important;
+  }
+}
+
+/* Silhouettes techniques du carrousel, en attendant les photos. */
+.glyph-body > * {
+  fill: #f2efe9;
+  stroke: rgba(255, 255, 255, 0.55);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+}
+.glyph-glass {
+  fill: rgba(18, 17, 16, 0.55);
+  stroke: none;
+}
+.glyph-line {
+  fill: none;
+  stroke: rgba(18, 17, 16, 0.32);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
 /* Film grain over the hero's colour field. */
 @utility grain {
-  opacity: 0.22;
-  mix-blend-mode: multiply;
+  opacity: 0.3;
+  mix-blend-mode: soft-light;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.3 0 0 0 0 0.3 0 0 0 0 0.3 0 0 0 0.6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
 }
